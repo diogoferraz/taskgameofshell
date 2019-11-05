@@ -25,11 +25,13 @@ class App extends Component {
     this.count = 0;
   }
 
-  numFlipKey = () => Math.floor(Math.random() * 9) + 1;
+  numFlipKey = () => Math.floor(Math.random() * 100) + 1;
 
   isTheOne = (e) => {
-    switch (e) {
-      case 1:
+    if(!this.startRuning) return;
+    const choosen = _.find(this.state.data, item => item.ball === true);
+    switch (choosen.id === e) {
+      case true:
         this.setState({ message: 'You got it! Congratulations!' });
         this.hideImage = false;
         break;
@@ -41,7 +43,7 @@ class App extends Component {
 
   onShuffleStart = () => {
     this.hideImage = true;
-    this.startDisabled = true;
+    this.startRuning = true;
     this.count = 0;
     this.interval = setInterval(() => {
       this.setState({ data: _.shuffle(this.state.data) });
@@ -50,8 +52,19 @@ class App extends Component {
 
   onRetry = () => {
     this.hideImage = false;
-    this.startDisabled = false;
-    this.setState(initialState);
+    this.startRuning = false;
+    const randomBall = Math.floor(Math.random() * 3) + 1;
+    const newData = [];
+
+    _.forEach(this.state.data, (item) => {
+        if(item.id === randomBall) {
+          item.ball = true;
+        } else {
+          item.ball = false;
+        }
+        newData.push(item);
+    });
+    this.setState({data: newData, message: ''});
   }
 
   onStopShuffle = () => {
@@ -78,8 +91,8 @@ class App extends Component {
                     this.count = _.add(this.count, 1);
                     this.count >= 20 && this.onStopShuffle();
                   }}>
-                  <li>
-                    <div onClick={e => this.isTheOne(d.id)} className={'shell'}>
+                  <li key={d.id}>
+                    <div key={d.id} onClick={e => this.isTheOne(d.id)} className={'shell'} >
                       {d.ball && <img src={Circle} className={`image ${this.hideImage ? 'hide' : ''}`} alt={''} />}
                     </div>
                   </li>
@@ -89,7 +102,7 @@ class App extends Component {
           </Flipper>
         </div>
         <div className={'footer'}>
-          <button className={`button ${this.startDisabled ? 'disabled': ''}`} onClick={this.onShuffleStart} disabled={this.startDisabled}>Start</button>
+          <button className={`button ${this.startRuning ? 'disabled': ''}`} onClick={this.onShuffleStart} disabled={this.startRuning}>Start</button>
           <button className={'button'} onClick={this.onRetry}>Retry</button>
         </div>
       </div>

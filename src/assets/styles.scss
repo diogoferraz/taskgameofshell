@@ -24,6 +24,18 @@ body {
 		background-color: ghostwhite;
 		height: 50px;
 		border-bottom: 1px solid black;
+		display: flex;
+		justify-content: center;
+		.message {
+			margin-top: 10px;
+			font-size: 16px;
+			&.success {
+				border: 1px solid greenyellow;
+			}
+			&.error {
+				border: 1px solid red;
+			}
+		}
 	}
 	
 	.content {
