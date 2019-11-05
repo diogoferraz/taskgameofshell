@@ -22,18 +22,29 @@ body {
 	flex-direction: column;
 	.header{
 		background-color: ghostwhite;
-		height: 50px;
+		height: 70px;
 		border-bottom: 1px solid black;
 		display: flex;
 		justify-content: center;
 		.message {
-			margin-top: 10px;
+			font-weight: 600;
 			font-size: 16px;
+			margin-bottom: 18px;
+			p {
+				margin: 0;
+    		padding: 12px;
+			}
 			&.success {
 				border: 1px solid greenyellow;
+				background-color: rgba(64,255,36,0.2);
 			}
 			&.error {
 				border: 1px solid red;
+				background-color: rgba(255,36,61,0.2);
+			}
+			&.info {
+				border: 1px solid aqua;
+				background-color: rgba(36,218,255,0.2);
 			}
 		}
 	}
@@ -41,6 +52,12 @@ body {
 	.content {
 		display: flex;
 		justify-content: center;
+		.overlay {
+			position: absolute;
+			background-color: transparent;
+			height: 17vh;
+    	width: 51vh;
+		}
 	}
 	
 	.footer {
@@ -75,7 +92,7 @@ body {
 		&.hide {
 			visibility: hidden;
 			opacity: 0;
-			transition: visibility 0s linear 0.33s, opacity 0.33s linear;
+			transition: visibility 0s linear 0.10s, opacity 0.10s linear;
 		}
 	}
 }
