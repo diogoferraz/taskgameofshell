@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Flipper, Flipped } from 'react-flip-toolkit';
 import _ from 'lodash';
-import './assets/styles.scss';
-import Circle from './assets/images/circle.svg';
+import '../assets/styles.scss';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import Content from '../components/Content';
 
 const initialState = {
   data: [
@@ -20,16 +21,29 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = initialState;
-    this.numFlipKey = this.numFlipKey.bind(this);
-    this.isTheOne = this.isTheOne.bind(this);
+    this.onClickShell = this.onClickShell.bind(this);
     this.onShuffleStart = this.onShuffleStart.bind(this);
     this.onShuffleStop = this.onShuffleStop.bind(this);
+    this.onCompleteShuffle = this.onCompleteShuffle.bind(this);
     this.count = 0;
   }
 
-  numFlipKey = () => Math.floor(Math.random() * 100) + 1;
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
 
-  isTheOne = (e) => {
+  render() {
+    const { message, overlay, data, hideImage, startRunning } = this.state;
+    return (
+      <div className={'wrapper'}>
+        <Header message={message} />
+        <Content overlay={overlay} data={data} onCompleteShuffle={this.onCompleteShuffle} hideImage={hideImage} onClickShell={this.onClickShell} />
+        <Footer startRunning={startRunning} onShuffleStart={this.onShuffleStart} onRetry={this.onRetry} />
+      </div>
+    );
+  }
+
+  onClickShell = (e) => {
     if (!this.state.startRunning) return;
     const choosen = _.find(this.state.data, item => item.ball === true);
     switch (choosen.id === e) {
@@ -71,43 +85,9 @@ class App extends Component {
     this.setState({ overlay: false, message: { text: 'Click on the rectangle which hides the black ball', type: 'info' } });
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  render() {
-    const { message, overlay, data, hideImage, startRunning } = this.state;
-    return (
-      <div className={'wrapper'}>
-        <div className={'header'}>
-          {message.text && <div className={`message ${message.type}`}><p>{message.text}</p></div>}
-        </div>
-        <div className={'content'}>
-          {overlay && <div className={'overlay'} onClick={(e) => console.log(e)} />}
-          <Flipper flipKey={this.numFlipKey()}>
-            <ul className={'list'}>
-              {data.map(d => (
-                <Flipped key={d.id} flipId={d.id}
-                  onComplete={() => {
-                    this.count = _.add(this.count, 1);
-                    if (this.count === 20) this.onShuffleStop();
-                  }}>
-                  <li key={d.id}>
-                    <div key={d.id} onClick={e => this.isTheOne(d.id)} className={'shell'} >
-                      {d.ball && <img src={Circle} className={`image ${hideImage ? 'hide' : ''}`} alt={''} />}
-                    </div>
-                  </li>
-                </Flipped>
-              ))}
-            </ul>
-          </Flipper>
-        </div>
-        <div className={'footer'}>
-          <button className={`button ${startRunning ? 'disabled' : ''}`} onClick={this.onShuffleStart} disabled={startRunning}>Start</button>
-          <button className={'button'} onClick={this.onRetry}>Restart</button>
-        </div>
-      </div>
-    );
+  onCompleteShuffle = () => {
+    this.count = _.add(this.count, 1);
+    if (this.count === 20) this.onShuffleStop();
   }
 };
 
