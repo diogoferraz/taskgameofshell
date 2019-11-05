@@ -1,37 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Flipper, Flipped } from 'react-flip-toolkit';
 import _ from 'lodash';
 import './assets/styles.css';
 import Circle from './assets/images/circle.svg';
-
+const shells = [
+  { id: 1, ball: true },
+  { id: 2, ball: false },
+  { id: 3, ball: false },
+]
 const App = () => {
-  const random = () => Math.floor(Math.random() * 3) + 1;
-  const [data, setData] = useState([
-    {id: 1, ball: true},
-    {id: 2, ball: false},
-    {id: 3, ball: false},
-  ]);
-  const [count, setCount] = useState(0);
+  const numShuffle = () => Math.floor(Math.random() * 9) + 1;
+  const image = useRef();
+  const [data, setData] = useState(shells);
+  const [countShuffle, setCountShuffle] = useState(0);
   const [showMessage, setShowMessage] = useState('');
+  let interval;
 
   const isTheOne = (e) => {
-    switch(e) {
+    switch (e) {
       case true:
         setShowMessage('You got it! Congratulations!');
         break;
       default:
-          setShowMessage('Swing and a miss! Click on retry to try again!')
+        setShowMessage('Swing and a miss! Click on retry to try again!')
         break;
     }
   };
 
-  const start = () => {
-    _.times(5, () => {
-      setData(_.shuffle(data));
-      setCount(random());
-    });
+  const shuffleStart = () => {
+    interval = setInterval(() => {
+      if(countShuffle < 8) setData(_.shuffle(data));
+    }, 500);
+
+    return () => clearInterval(interval);
   };
 
+  useEffect(() => {
+    shuffleStart();
+  }, []);
 
   return (
     <div className={'wrapper'}>
@@ -39,14 +45,14 @@ const App = () => {
         {showMessage && <div className={'message'}>{showMessage}</div>}
       </div>
       <div className={'content'}>
-        <Flipper flipKey={count}>
+        <Flipper flipKey={numShuffle()}>
           <ul className={'list'}>
             {data.map(d => (
-              <Flipped key={d.id} flipId={d.id} onComplete={()=>console.log('onComplete called')}>
+              <Flipped key={d.id} flipId={d.id} onComplete={() => {}}>
                 <li>
                   <div onClick={e => isTheOne(d.id)} className={'shell'}>
-                    {d.ball && <img src={Circle} className={'image'} alt={''} />}
-                  </div>                
+                    {d.ball && <img src={Circle} className={'image'} alt={''} ref={image} />}
+                  </div>
                 </li>
               </Flipped>
             ))}
@@ -54,7 +60,7 @@ const App = () => {
         </Flipper>
       </div>
       <div className={'footer'}>
-        <button className={'button'} onClick={start}>Start</button>
+        <button className={'button'} onClick={()=>{}}>Start</button>
         <button className={'button'} onClick={() => {}}>Retry</button>
       </div>
     </div>
