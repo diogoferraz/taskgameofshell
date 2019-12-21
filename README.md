@@ -6,13 +6,13 @@ Simple React App with SASS.</br>
 <ul>
 <li>
 Git clone https://github.com/diogoferraz/taskgameofshell.git
-<li>
+</li>
 <li>
 Run npm install
-<li>
+</li>
 <li>
 Run npm start 
-<li>
+</li>
 </ul>
 
 And you should be set to go! Hope it helps!</br>
