@@ -92,11 +92,8 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  console.log('state', state)
-  return ({
+const mapStateToProps = (state) => ({
     message: state.messageReducer
-  })
-};
+  });
 
 export default connect(mapStateToProps)(App);
